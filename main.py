@@ -9,7 +9,6 @@ import traceback
 from dotenv import load_dotenv
 from typing import Optional, Dict, Any
 from fastapi import HTTPException
-from pymongo.server_api import ServerApi
 
 load_dotenv()
 
@@ -26,8 +25,9 @@ class UserCreate(BaseModel):
 
 client = MongoClient(
     os.getenv("MONGO_URI"),
+    tls=True,
     tlsCAFile=certifi.where(),
-    server_api=ServerApi("1")
+    serverSelectionTimeoutMS=10000
 )
 
 db = client["ValveDB"]
