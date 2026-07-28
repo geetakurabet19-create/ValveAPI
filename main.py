@@ -53,8 +53,9 @@ def create_user(user: UserCreate):
             "user_id": user_id
         }
 
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    except Exception:
+        traceback.print_exc()
+        raise
 
 @app.get("/users")
 def get_users():
@@ -66,5 +67,6 @@ def get_users():
 
         return users
 
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    except Exception:
+        traceback.print_exc()
+        raise
