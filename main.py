@@ -5,11 +5,17 @@ from datetime import datetime
 from uuid import uuid4
 import certifi
 import os
+import traceback
 from dotenv import load_dotenv
 from typing import Optional, Dict, Any
 from fastapi import HTTPException
+from pymongo.server_api import ServerApi
 
 load_dotenv()
+
+print("MONGO_URI exists:", os.getenv("MONGO_URI") is not None)
+print("MONGO_URI starts with:", os.getenv("MONGO_URI")[:25] if os.getenv("MONGO_URI") else "None")
+
 
 app = FastAPI()
 
@@ -20,7 +26,8 @@ class UserCreate(BaseModel):
 
 client = MongoClient(
     os.getenv("MONGO_URI"),
-    tlsCAFile=certifi.where()
+    tlsCAFile=certifi.where(),
+    server_api=ServerApi("1")
 )
 
 db = client["ValveDB"]
@@ -53,9 +60,10 @@ def create_user(user: UserCreate):
             "user_id": user_id
         }
 
-    except Exception:
+    except Exception as e:
         traceback.print_exc()
-        raise
+        print("ERROR:", repr(e))
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/users")
 def get_users():
@@ -67,6 +75,7 @@ def get_users():
 
         return users
 
-    except Exception:
+    except Exception as e:
         traceback.print_exc()
-        raise
+        print("ERROR:", repr(e))
+        raise HTTPException(status_code=500, detail=str(e))
