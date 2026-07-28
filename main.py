@@ -57,9 +57,9 @@ def create_user(user: UserCreate):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/users")
-def get_active_users():
+def get_users():
     try:
-        users = list(users_collection.find({"active": True}))
+        users = list(users_collection.find({}))
 
         for user in users:
             user.pop("_id", None)
@@ -67,4 +67,4 @@ def get_active_users():
         return users
 
     except Exception as e:
-        return {"error": str(e)}
+        raise HTTPException(status_code=500, detail=str(e))
