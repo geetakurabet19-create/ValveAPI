@@ -25,9 +25,8 @@ class UserCreate(BaseModel):
 
 client = MongoClient(
     os.getenv("MONGO_URI"),
-    tls=True,
     tlsCAFile=certifi.where(),
-    serverSelectionTimeoutMS=10000
+    serverSelectionTimeoutMS=30000
 )
 
 db = client["ValveDB"]
