@@ -30,6 +30,8 @@ client = MongoClient(
     serverSelectionTimeoutMS=5000
 )
 
+print(client.admin.command("ping"))
+
 db = client["ValveDB"]
 
 users_collection = db["users"]
